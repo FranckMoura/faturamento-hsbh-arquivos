@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compartilhamento de Arquivos - Faturamento HSBH</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to start for better scrolling on smaller screens */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background-color: #10B981; /* Emerald 500 */
+            color: white;
+            padding: 24px;
+            text-align: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .file-list {
+            padding: 24px;
+            flex-grow: 1;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb; /* Gray 200 */
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-item-name {
+            font-weight: 500;
+            color: #1f2937; /* Gray 900 */
+        }
+        .file-item-date {
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* Gray 500 */
+            margin-left: 16px;
+        }
+        .download-button {
+            background-color: #3B82F6; /* Blue 500 */
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .download-button:hover {
+            background-color: #2563EB; /* Blue 600 */
+        }
+        .upload-section {
+            padding: 24px;
+            background-color: #f9fafb; /* Gray 50 */
+            border-top: 1px solid #e5e7eb; /* Gray 200 */
+            text-align: center;
+        }
+        .upload-link {
+            background-color: #F59E0B; /* Amber 500 */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.2s ease-in-out;
+            display: inline-block;
+            margin-top: 16px;
+        }
+        .upload-link:hover {
+            background-color: #D97706; /* Amber 600 */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .file-item-details {
+                margin-bottom: 8px;
+            }
+            .download-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="text-3xl font-bold mb-2">Setor de Faturamento</h1>
+            <p class="text-lg">Hospital Beneficente Santa Helena - Cuiabá/MT</p>
+            <p class="text-sm mt-1">Compartilhamento e Acesso Rápido a Documentos</p>
+        </header>
+
+        <main class="file-list">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Documentos Recentes</h2>
+
+            <!-- Exemplo de item de arquivo -->
+            <div class="file-item">
+                <div class="file-item-details">
+                    <span class="file-item-name">Relatório Mensal - Convênio SUS (Maio 2025).pdf</span>
+                    <span class="file-item-date">Última atualização: 01/06/2025</span>
+                </div>
+                <a href="https://docs.google.com/document/d/1example1/edit?usp=sharing" target="_blank" class="download-button">
+                    Visualizar/Baixar
+                </a>
+            </div>
+
+            <!-- Outro exemplo de item de arquivo -->
+            <div class="file-item">
+                <div class="file-item-details">
+                    <span class="file-item-name">Planilha de Faturas Pendentes (Junho 2025).xlsx</span>
+                    <span class="file-item-date">Última atualização: 28/06/2025</span>
+                </div>
+                <a href="https://docs.google.com/spreadsheets/d/1example2/edit?usp=sharing" target="_blank" class="download-button">
+                    Visualizar/Baixar
+                </a>
+            </div>
+
+            <!-- Adicione mais itens de arquivo aqui conforme necessário -->
+            <div class="file-item">
+                <div class="file-item-details">
+                    <span class="file-item-name">Guia de Procedimentos SUS - Versão 3.0.pdf</span>
+                    <span class="file-item-date">Última atualização: 15/05/2025</span>
+                </div>
+                <a href="https://docs.google.com/document/d/1example3/edit?usp=sharing" target="_blank" class="download-button">
+                    Visualizar/Baixar
+                </a>
+            </div>
+
+            <div class="file-item">
+                <div class="file-item-details">
+                    <span class="file-item-name">Ata da Reunião de Faturamento (25/06/2025).docx</span>
+                    <span class="file-item-date">Última atualização: 26/06/2025</span>
+                </div>
+                <a href="https://docs.google.com/document/d/1example4/edit?usp=sharing" target="_blank" class="download-button">
+                    Visualizar/Baixar
+                </a>
+            </div>
+
+        </main>
+
+        <section class="upload-section">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">Precisa enviar um documento?</h3>
+            <p class="text-gray-600 mb-4">Utilize nossa pasta compartilhada no Google Drive para fazer upload de novos arquivos.</p>
+            <a href="https://drive.google.com/drive/folders/seu-id-da-pasta-compartilhada" target="_blank" class="upload-link">
+                Acessar Pasta de Upload
+            </a>
+            <p class="text-sm text-gray-500 mt-4">Em caso de dúvidas, contate o TI do Hospital.</p>
+        </section>
+    </div>
+</body>
+</html>
