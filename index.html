@@ -11,10 +11,10 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
+            background-color: #f3f4f6; /* Fundo cinza claro */
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align to start for better scrolling on smaller screens */
+            align-items: flex-start; /* Alinhar ao topo para melhor rolagem em telas menores */
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -30,7 +30,7 @@
             flex-direction: column;
         }
         .header {
-            background-color: #10B981; /* Emerald 500 */
+            background-color: #10B981; /* Esmeralda 500 */
             color: white;
             padding: 24px;
             text-align: center;
@@ -46,22 +46,22 @@
             justify-content: space-between;
             align-items: center;
             padding: 16px;
-            border-bottom: 1px solid #e5e7eb; /* Gray 200 */
+            border-bottom: 1px solid #e5e7eb; /* Cinza 200 */
         }
         .file-item:last-child {
             border-bottom: none;
         }
         .file-item-name {
             font-weight: 500;
-            color: #1f2937; /* Gray 900 */
+            color: #1f2937; /* Cinza 900 */
         }
         .file-item-date {
-            font-size: 0.875rem; /* text-sm */
-            color: #6b7280; /* Gray 500 */
+            font-size: 0.875rem; /* texto-sm */
+            color: #6b7280; /* Cinza 500 */
             margin-left: 16px;
         }
         .download-button {
-            background-color: #3B82F6; /* Blue 500 */
+            background-color: #3B82F6; /* Azul 500 */
             color: white;
             padding: 8px 16px;
             border-radius: 8px;
@@ -70,16 +70,16 @@
             transition: background-color 0.2s ease-in-out;
         }
         .download-button:hover {
-            background-color: #2563EB; /* Blue 600 */
+            background-color: #2563EB; /* Azul 600 */
         }
         .upload-section {
             padding: 24px;
-            background-color: #f9fafb; /* Gray 50 */
-            border-top: 1px solid #e5e7eb; /* Gray 200 */
+            background-color: #f9fafb; /* Cinza 50 */
+            border-top: 1px solid #e5e7eb; /* Cinza 200 */
             text-align: center;
         }
         .upload-link {
-            background-color: #F59E0B; /* Amber 500 */
+            background-color: #F59E0B; /* Âmbar 500 */
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
@@ -90,10 +90,10 @@
             margin-top: 16px;
         }
         .upload-link:hover {
-            background-color: #D97706; /* Amber 600 */
+            background-color: #D97706; /* Âmbar 600 */
         }
 
-        /* Responsive adjustments */
+        /* Ajustes responsivos */
         @media (max-width: 640px) {
             .file-item {
                 flex-direction: column;
@@ -112,6 +112,8 @@
 <body>
     <div class="container">
         <header class="header">
+            <!-- Logomarca do Hospital -->
+            <img src="image.png" alt="Logomarca Hospital Beneficente Santa Helena" class="mx-auto mb-4" style="max-width: 250px; height: auto;">
             <h1 class="text-3xl font-bold mb-2">Setor de Faturamento</h1>
             <p class="text-lg">Hospital Beneficente Santa Helena - Cuiabá/MT</p>
             <p class="text-sm mt-1">Compartilhamento e Acesso Rápido a Documentos</p>
@@ -168,7 +170,6 @@
         <section class="upload-section">
             <h3 class="text-xl font-semibold text-gray-700 mb-3">Precisa enviar um documento?</h3>
             <p class="text-gray-600 mb-4">Utilize nossa pasta compartilhada no Google Drive para fazer upload de novos arquivos.</p>
-            <!-- Link atualizado para a pasta compartilhada do Google Drive -->
             <a href="https://drive.google.com/drive/folders/14Pd5FneWAw93CAIkog9zmqdNyLh_USJa" target="_blank" class="upload-link">
                 Acessar Pasta de Upload
             </a>
