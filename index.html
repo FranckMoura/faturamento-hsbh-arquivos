@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compartilhamento de Arquivos - Faturamento HSBH</title>
+    <title>Compartilhamento de Arquivos - Faturamento HBSH</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -13,33 +13,71 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Fundo cinza claro */
             display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Alinhar ao topo para melhor rolagem em telas menores */
+            flex-direction: column; /* Para que o header fique no topo e o resto abaixo */
             min-height: 100vh;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
-        }
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
         .header {
             background-color: #10B981; /* Esmeralda 500 */
             color: white;
             padding: 24px;
             text-align: center;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+            width: 100%; /* Ocupa a largura total */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 100; /* Garante que o header fique acima do conteúdo */
         }
-        .file-list {
+        .main-layout {
+            display: flex;
+            flex: 1; /* Permite que ocupe o espaço restante */
+            width: 100%;
+            max-width: 1200px; /* Largura máxima para o layout principal */
+            margin: 20px auto; /* Centraliza e adiciona margem */
+            border-radius: 12px;
+            overflow: hidden; /* Para conter os cantos arredondados */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; /* Fundo branco para o container principal */
+        }
+        .nav-bar {
+            background-color: #059669; /* Esmeralda 600 - um pouco mais escuro */
+            padding: 20px;
+            width: 220px; /* Largura fixa da barra lateral */
+            flex-shrink: 0; /* Não encolhe a barra lateral */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border-top-left-radius: 12px; /* Arredonda o canto superior esquerdo */
+            border-bottom-left-radius: 12px; /* Arredonda o canto inferior esquerdo */
+        }
+        .nav-link {
+            color: white;
+            padding: 12px 16px;
+            margin-bottom: 8px; /* Espaçamento entre os links */
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out;
+            width: 100%; /* Ocupa a largura total da barra lateral */
+            text-align: left;
+        }
+        .nav-link:hover {
+            background-color: #047857; /* Esmeralda 700 */
+        }
+        .content-area {
+            flex-grow: 1; /* Ocupa o espaço restante */
             padding: 24px;
-            flex-grow: 1;
+            overflow-y: auto; /* Permite rolagem dentro da área de conteúdo se necessário */
+        }
+        .module-section {
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e5e7eb; /* Cinza 200 */
+        }
+        .module-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
         }
         .file-item {
             display: flex;
@@ -73,10 +111,12 @@
             background-color: #2563EB; /* Azul 600 */
         }
         .upload-section {
-            padding: 24px;
+            padding-top: 24px;
             background-color: #f9fafb; /* Cinza 50 */
             border-top: 1px solid #e5e7eb; /* Cinza 200 */
             text-align: center;
+            /* Remove border-bottom-left-radius e border-bottom-right-radius do container para que o upload-section arredonde */
+            border-bottom-right-radius: 12px;
         }
         .upload-link {
             background-color: #F59E0B; /* Âmbar 500 */
@@ -93,8 +133,31 @@
             background-color: #D97706; /* Âmbar 600 */
         }
 
-        /* Ajustes responsivos */
-        @media (max-width: 640px) {
+        /* Ajustes responsivos para telas menores */
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column; /* Empilha o menu e o conteúdo */
+                margin: 10px; /* Margem menor em telas pequenas */
+            }
+            .nav-bar {
+                width: 100%; /* Menu ocupa a largura total */
+                padding: 10px;
+                flex-direction: row; /* Links do menu em linha */
+                justify-content: center;
+                flex-wrap: wrap; /* Quebra linha se muitos links */
+                border-top-left-radius: 0; /* Remove arredondamento superior esquerdo */
+                border-bottom-left-radius: 0; /* Remove arredondamento inferior esquerdo */
+                border-bottom-right-radius: 12px; /* Adiciona arredondamento inferior direito */
+                border-top-right-radius: 12px; /* Adiciona arredondamento superior direito */
+            }
+            .nav-link {
+                margin: 4px; /* Espaçamento menor entre links */
+                width: auto; /* Largura automática para links */
+                text-align: center;
+            }
+            .content-area {
+                padding: 16px; /* Padding menor no conteúdo */
+            }
             .file-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -110,71 +173,137 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <!-- Logomarca do Hospital -->
-            <img src="image.png" alt="Logomarca Hospital Beneficente Santa Helena" class="mx-auto mb-4" style="max-width: 250px; height: auto;">
-            <h1 class="text-3xl font-bold mb-2">Setor de Faturamento</h1>
-            <p class="text-lg">Hospital Beneficente Santa Helena - Cuiabá/MT</p>
-            <p class="text-sm mt-1">Compartilhamento e Acesso Rápido a Documentos</p>
-        </header>
+    <header class="header">
+        <!-- Logomarca do Hospital -->
+        <img src="image.png" alt="Logomarca Hospital Beneficente Santa Helena" class="mx-auto mb-4" style="max-width: 250px; height: auto;">
+        <h1 class="text-3xl font-bold mb-2">Setor de Faturamento</h1>
+        <p class="text-lg">Hospital Beneficente Santa Helena - Cuiabá/MT</p>
+        <p class="text-sm mt-1">Compartilhamento e Acesso Rápido a Documentos</p>
+    </header>
 
-        <main class="file-list">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Documentos Recentes</h2>
+    <div class="main-layout">
+        <!-- Menu Lateral Esquerdo -->
+        <nav class="nav-bar">
+            <a href="#relatorios" class="nav-link">Relatórios</a>
+            <a href="#arquivos" class="nav-link">Arquivos</a>
+            <a href="#informacoes" class="nav-link">Informações</a>
+            <a href="#upload" class="nav-link">Upload</a>
+        </nav>
 
-            <!-- Exemplo de item de arquivo -->
-            <div class="file-item">
-                <div class="file-item-details">
-                    <span class="file-item-name">Relatório Mensal - Convênio SUS (Maio 2025).pdf</span>
-                    <span class="file-item-date">Última atualização: 01/06/2025</span>
+        <!-- Área de Conteúdo Principal -->
+        <div class="content-area">
+            <!-- Módulo: Relatórios -->
+            <section id="relatorios" class="module-section">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Relatórios Financeiros e de Convênio</h2>
+
+                <!-- Exemplo de item de relatório -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Relatório Mensal - Convênio SUS (Maio 2025).pdf</span>
+                        <span class="file-item-date">Última atualização: 01/06/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/document/d/1example1/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
                 </div>
-                <a href="https://docs.google.com/document/d/1example1/edit?usp=sharing" target="_blank" class="download-button">
-                    Visualizar/Baixar
-                </a>
-            </div>
 
-            <!-- Outro exemplo de item de arquivo -->
-            <div class="file-item">
-                <div class="file-item-details">
-                    <span class="file-item-name">Planilha de Faturas Pendentes (Junho 2025).xlsx</span>
-                    <span class="file-item-date">Última atualização: 28/06/2025</span>
+                <!-- Outro exemplo de item de relatório -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Planilha de Faturas Pendentes (Junho 2025).xlsx</span>
+                        <span class="file-item-date">Última atualização: 28/06/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/spreadsheets/d/1example2/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
                 </div>
-                <a href="https://docs.google.com/spreadsheets/d/1example2/edit?usp=sharing" target="_blank" class="download-button">
-                    Visualizar/Baixar
-                </a>
-            </div>
 
-            <!-- Adicione mais itens de arquivo aqui conforme necessário -->
-            <div class="file-item">
-                <div class="file-item-details">
-                    <span class="file-item-name">Guia de Procedimentos SUS - Versão 3.0.pdf</span>
-                    <span class="file-item-date">Última atualização: 15/05/2025</span>
+                <!-- Adicione mais relatórios aqui conforme necessário -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Relatório Anual de Desempenho (2024).pdf</span>
+                        <span class="file-item-date">Última atualização: 15/01/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/document/d/1example5/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
                 </div>
-                <a href="https://docs.google.com/document/d/1example3/edit?usp=sharing" target="_blank" class="download-button">
-                    Visualizar/Baixar
-                </a>
-            </div>
+            </section>
 
-            <div class="file-item">
-                <div class="file-item-details">
-                    <span class="file-item-name">Ata da Reunião de Faturamento (25/06/2025).docx</span>
-                    <span class="file-item-date">Última atualização: 26/06/2025</span>
+            <!-- Módulo: Arquivos -->
+            <section id="arquivos" class="module-section">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Arquivos Gerais e Procedimentos</h2>
+
+                <!-- Exemplo de item de arquivo -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Guia de Procedimentos SUS - Versão 3.0.pdf</span>
+                        <span class="file-item-date">Última atualização: 15/05/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/document/d/1example3/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
                 </div>
-                <a href="https://docs.google.com/document/d/1example4/edit?usp=sharing" target="_blank" class="download-button">
-                    Visualizar/Baixar
+
+                <!-- Outro exemplo de item de arquivo -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Ata da Reunião de Faturamento (25/06/2025).docx</span>
+                        <span class="file-item-date">Última atualização: 26/06/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/document/d/1example4/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
+                </div>
+
+                <!-- Adicione mais arquivos aqui conforme necessário -->
+                <div class="file-item">
+                    <div class="file-item-details">
+                        <span class="file-item-name">Manual de Boas Práticas - Faturamento.pdf</span>
+                        <span class="file-item-date">Última atualização: 10/03/2025</span>
+                    </div>
+                    <a href="https://docs.google.com/document/d/1example6/edit?usp=sharing" target="_blank" class="download-button">
+                        Visualizar/Baixar
+                    </a>
+                </div>
+            </section>
+
+            <!-- Módulo: Informações -->
+            <section id="informacoes" class="module-section">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Informações Importantes do Setor</h2>
+                <div class="text-gray-700 leading-relaxed">
+                    <p class="mb-4">
+                        Bem-vindo à seção de informações do Setor de Faturamento do Hospital Beneficente Santa Helena.
+                        Aqui você encontrará comunicados importantes, horários de atendimento, contatos úteis e
+                        diretrizes para o dia a dia do trabalho.
+                    </p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Avisos e Comunicados:</h3>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>**01/07/2025:** Nova diretriz para lançamento de guias de convênio SUS a partir de 08/07/2025. Consulte o documento "Guia de Procedimentos SUS" na seção de Arquivos.</li>
+                        <li>**20/06/2025:** Reunião mensal do setor de faturamento agendada para 05/07/2025 às 14h na sala de reuniões. Pauta disponível na seção de Relatórios.</li>
+                    </ul>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Contatos Úteis:</h3>
+                    <ul class="list-disc list-inside">
+                        <li>**Chefia de Faturamento:** [Nome do Chefe] - Ramal: XXXX</li>
+                        <li>**Suporte de TI:** Ramal: YYYY</li>
+                        <li>**Convênio SUS (Central):** Telefone: (XX) XXXX-XXXX</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Seção de Upload (mantida e linkada no menu) -->
+            <section id="upload" class="module-section upload-section">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Precisa enviar um documento?</h3>
+                <p class="text-gray-600 mb-4">Utilize nossa pasta compartilhada no Google Drive para fazer upload de novos arquivos.</p>
+                <a href="https://drive.google.com/drive/folders/14Pd5FneWAw93CAIkog9zmqdNyLh_USJa" target="_blank" class="upload-link">
+                    Acessar Pasta de Upload
                 </a>
-            </div>
-
-        </main>
-
-        <section class="upload-section">
-            <h3 class="text-xl font-semibold text-gray-700 mb-3">Precisa enviar um documento?</h3>
-            <p class="text-gray-600 mb-4">Utilize nossa pasta compartilhada no Google Drive para fazer upload de novos arquivos.</p>
-            <a href="https://drive.google.com/drive/folders/14Pd5FneWAw93CAIkog9zmqdNyLh_USJa" target="_blank" class="upload-link">
-                Acessar Pasta de Upload
-            </a>
-            <p class="text-sm text-gray-500 mt-4">Em caso de dúvidas, contate o TI do Hospital.</p>
-        </section>
+                <p class="text-sm text-gray-500 mt-4">Em caso de dúvidas, contate o TI do Hospital.</p>
+            </section>
+        </div>
     </div>
 </body>
 </html>
+
+
+
