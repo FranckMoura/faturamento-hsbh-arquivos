@@ -1,94 +1,57 @@
-﻿<!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compartilhamento de Arquivos - Faturamento HBSH</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>NII - Núcleo Interno de Informação</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="header">
-        <img src="image.png" alt="Logomarca Hospital Beneficente Santa Helena" class="mx-auto mb-4" style="max-width: 250px; height: auto;">
-        <h1 class="text-3xl font-bold mb-2">Setor de Faturamento</h1>
-        <p class="text-lg">Hospital Beneficente Santa Helena - Cuiabá/MT</p>
-        <p class="text-sm mt-1">Compartilhamento e Acesso Rápido a Documentos</p>
+    <nav class="navbar">
+        <div class="container">
+            <span class="navbar-brand">NII - HBSH</span>
+            <ul class="navbar-nav">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="faturamento.html">Faturamento</a></li>
+                <li><a href="indicadores.html">Indicadores</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Núcleo Interno de Informação</h1>
+            <p>Selecione um módulo para visualizar relatórios e indicadores.</p>
+        </div>
     </header>
 
-    <div class="main-layout">
-        <nav class="nav-bar">
-            <a href="#relatorios" class="nav-link"><i class="fas fa-chart-pie fa-fw mr-2"></i>Relatórios</a>
-            <a href="#arquivos" class="nav-link"><i class="fas fa-folder-open fa-fw mr-2"></i>Arquivos</a>
-            <a href="#informacoes" class="nav-link"><i class="fas fa-info-circle fa-fw mr-2"></i>Informações</a>
-            <a href="#upload" class="nav-link"><i class="fas fa-upload fa-fw mr-2"></i>Upload</a>
-        </nav>
+    <main class="container">
+        <div class="dashboard-grid">
+            
+            <article class="card">
+                <h2>Módulo Faturamento SUS</h2>
+                <p>Relatórios de produção, valores faturados por prestador, repasses médicos e arquivos da competência.</p>
+                <a href="faturamento.html" class="button">Acessar Módulo</a>
+            </article>
 
-        <div class="content-area">
-            <section id="relatorios" class="module-section">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Relatórios Financeiros e de Convênio</h2>
-                <div class="file-item">
-                    <div class="file-item-details">
-                        <span class="file-item-name"><i class="fas fa-file-pdf text-red-500 fa-fw mr-2"></i>Relatório Mensal - Convênio SUS (Maio 2025).pdf</span>
-                        <span class="file-item-date">Última atualização: 01/06/2025</span>
-                    </div>
-                    <a href="https://drive.google.com/file/d/1lYnf8WPSpduEkkyJV7GFu4ocfcm8P7yO/view?usp=drive_link" target="_blank" class="download-button">Visualizar/Baixar</a>
-                </div>
-                <div class="file-item">
-                    <div class="file-item-details">
-                        <span class="file-item-name"><i class="fas fa-file-excel text-green-600 fa-fw mr-2"></i>Planilha de Faturas Pendentes (Junho 2025).xlsx</span>
-                        <span class="file-item-date">Última atualização: 28/06/2025</span>
-                    </div>
-                    <a href="https://docs.google.com/spreadsheets/d/1example2/edit?usp=sharing" target="_blank" class="download-button">Visualizar/Baixar</a>
-                </div>
-            </section>
+            <article class="card">
+                <h2>Módulo Indicadores</h2>
+                <p>Taxa de ocupação, média de permanência, taxa de infecção, taxa de mortalidade e outros indicadores hospitalares.</p>
+                <a href="indicadores.html" class="button">Acessar Módulo</a>
+            </article>
 
-            <section id="arquivos" class="module-section">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Arquivos Gerais e Procedimentos</h2>
-                <div class="file-item">
-                    <div class="file-item-details">
-                        <span class="file-item-name"><i class="fas fa-file-pdf text-red-500 fa-fw mr-2"></i>Guia de Procedimentos SUS - Versão 3.0.pdf</span>
-                        <span class="file-item-date">Última atualização: 15/05/2025</span>
-                    </div>
-                    <a href="https://docs.google.com/document/d/1example3/edit?usp=sharing" target="_blank" class="download-button">Visualizar/Baixar</a>
-                </div>
-                <div class="file-item">
-                    <div class="file-item-details">
-                        <span class="file-item-name"><i class="fas fa-file-word text-blue-600 fa-fw mr-2"></i>Ata da Reunião de Faturamento (25/06/2025).docx</span>
-                        <span class="file-item-date">Última atualização: 26/06/2025</span>
-                    </div>
-                    <a href="https://docs.google.com/document/d/1example4/edit?usp=sharing" target="_blank" class="download-button">Visualizar/Baixar</a>
-                </div>
-            </section>
+            <article class="card">
+                <h2>Módulo Financeiro</h2>
+                <p>Relatórios de repasse para diretoria e demonstrativos financeiros (em breve).</p>
+                <a href="#" class="button disabled">Em Desenvolvimento</a>
+            </article>
 
-            <section id="informacoes" class="module-section">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Informações Importantes do Setor</h2>
-                <div class="text-gray-700 leading-relaxed">
-                    <p class="mb-4">Bem-vindo à seção de informações do Setor de Faturamento do Hospital Beneficente Santa Helena.</p>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Avisos e Comunicados:</h3>
-                    <ul class="list-disc list-inside mb-4">
-                        <li>**01/07/2025:** Nova diretriz para lançamento de guias de convênio SUS.</li>
-                        <li>**20/06/2025:** Reunião mensal agendada para 05/07/2025.</li>
-                    </ul>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Contatos Úteis:</h3>
-                    <ul class="list-disc list-inside">
-                        <li>**Chefia de Faturamento:** [Franck Moura] - Telefone: (65) 99229-7451</li>
-                        <li>**Suporte de TI:** Ramal: 0300</li>
-                        <li>**Convênio SUS (Central):** Ramal: 2123-0374</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section id="upload" class="module-section upload-section">
-                <h3 class="text-xl font-semibold text-gray-700 mb-3">Precisa enviar um documento?</h3>
-                <p class="text-gray-600 mb-4">Utilize nossa pasta compartilhada no Google Drive para fazer upload de novos arquivos.</p>
-                <a href="https://drive.google.com/drive/folders/14Pd5FneWAw93CAIkog9zmqdNyLh_USJa" target="_blank" class="upload-link">Acessar Pasta de Upload</a>
-                <p class="text-sm text-gray-500 mt-4">Em caso de dúvidas, contate o TI do Hospital.</p>
-            </section>
         </div>
-    </div>
+    </main>
 
-    <script src="script.js"></script>
+    <footer class="main-footer">
+        <p>Hospital Beneficente Santa Helena - Cuiabá/MT | Setor de Faturamento SUS</p>
+    </footer>
+
 </body>
 </html>
