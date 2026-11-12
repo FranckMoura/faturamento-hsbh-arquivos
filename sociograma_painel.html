@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Inteligência - Sociograma PMMT</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pmmt-blue': '#0a2240',
+                        'pmmt-gold': '#d4af37',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-pmmt-blue text-white rounded-xl shadow-lg border-b-4 border-pmmt-gold p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/10 p-3 rounded-lg border border-white/20">
+                    <i class="fa-solid fa-network-wired text-pmmt-gold text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-pmmt-gold tracking-wider uppercase">Inteligência Relacional</h1>
+                    <p class="text-xs text-slate-300 font-semibold tracking-widest uppercase mt-1">Painel de Resultados - Sociograma Policial</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="carregarDados()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded shadow transition text-xs font-bold uppercase tracking-wider flex items-center gap-2 border border-slate-500">
+                    <i class="fa-solid fa-arrows-rotate"></i> Atualizar Dados
+                </button>
+                <button onclick="window.print()" class="bg-pmmt-gold hover:bg-yellow-500 text-pmmt-blue px-4 py-2 rounded shadow transition text-xs font-black uppercase tracking-wider flex items-center gap-2 border border-yellow-400 print:hidden">
+                    <i class="fa-solid fa-print"></i> Relatório
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards de Resumo (KPIs) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex items-center gap-4 border-l-4 border-l-blue-500">
+                <i class="fa-solid fa-users text-4xl text-slate-300"></i>
+                <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Efetivo Total</p>
+                    <p class="text-2xl font-black text-slate-800" id="kpiEfetivo">0</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex items-center gap-4 border-l-4 border-l-emerald-500">
+                <i class="fa-solid fa-clipboard-check text-4xl text-slate-300"></i>
+                <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Respostas Registradas</p>
+                    <p class="text-2xl font-black text-slate-800" id="kpiRespostas">0</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex items-center gap-4 border-l-4 border-l-amber-500">
+                <i class="fa-solid fa-spinner text-4xl text-slate-300"></i>
+                <div>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pendentes</p>
+                    <p class="text-2xl font-black text-slate-800" id="kpiPendentes">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Rankings (Líderes) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- TOP Tático (Cubos) -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden flex flex-col">
+                <div class="bg-sys-dark px-5 py-3 border-b-4 border-emerald-500">
+                    <h2 class="text-sm font-black tracking-widest uppercase text-pmmt-blue"><i class="fa-solid fa-shield-halved text-emerald-500 mr-2"></i> Liderança Tática (Top 3)</h2>
+                    <p class="text-[9px] text-slate-500 uppercase mt-0.5 font-bold">Quem a tropa escolhe para ocorrências graves</p>
+                </div>
+                <div class="p-5 flex-1 bg-slate-50">
+                    <ul id="rankTatico" class="space-y-3">
+                        <li class="text-center text-slate-400 text-sm font-bold py-4"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Calculando...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TOP Técnico (Pontes) -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden flex flex-col">
+                <div class="bg-sys-dark px-5 py-3 border-b-4 border-blue-500">
+                    <h2 class="text-sm font-black tracking-widest uppercase text-pmmt-blue"><i class="fa-solid fa-book text-blue-500 mr-2"></i> Referência Técnica / TCO (Top 3)</h2>
+                    <p class="text-[9px] text-slate-500 uppercase mt-0.5 font-bold">Quem a tropa consulta em ocorrências complexas</p>
+                </div>
+                <div class="p-5 flex-1 bg-slate-50">
+                    <ul id="rankTecnico" class="space-y-3">
+                        <li class="text-center text-slate-400 text-sm font-bold py-4"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Calculando...</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Gráfico de Alertas (Rejeição) -->
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6">
+            <h2 class="text-sm font-black tracking-widest uppercase text-slate-700 mb-1 border-b border-slate-200 pb-2"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i> Mapa de Atenção (Maior Rejeição/Risco)</h2>
+            <p class="text-xs text-slate-500 mb-6 font-semibold">Alunos que a tropa prefere evitar em ocorrências (Indica necessidade de apoio técnico ou controle emocional).</p>
+            
+            <div class="h-64 w-full">
+                <canvas id="graficoRejeicao"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabela Completa Consolidada -->
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+            <div class="bg-pmmt-blue text-white px-5 py-3 flex justify-between items-center">
+                <h2 class="text-sm font-black tracking-widest uppercase"><i class="fa-solid fa-table-list text-pmmt-gold mr-2"></i> Detalhamento Completo (Votos Recebidos)</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 border-b border-slate-300">
+                            <th class="p-3 font-bold uppercase tracking-wider">Policial (QRA)</th>
+                            <th class="p-3 font-bold uppercase tracking-wider text-center text-emerald-600"><i class="fa-solid fa-shield"></i> Tático (C1)</th>
+                            <th class="p-3 font-bold uppercase tracking-wider text-center text-blue-600"><i class="fa-solid fa-book"></i> Técnico (C2)</th>
+                            <th class="p-3 font-bold uppercase tracking-wider text-center text-pmmt-gold"><i class="fa-solid fa-handshake"></i> Afinidade (C3)</th>
+                            <th class="p-3 font-bold uppercase tracking-wider text-center text-rose-600"><i class="fa-solid fa-ban"></i> Rejeição (C4)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaConsolidada" class="divide-y divide-slate-200 text-slate-700 font-semibold">
+                        <tr><td colspan="5" class="p-6 text-center text-slate-400 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Processando dados...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CREDENCIAIS SUPABASE (Substitua pelas suas)
+        // ==========================================
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let chartRejeicaoInstance = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await carregarDados();
+        });
+
+        async function carregarDados() {
+            // 1. Busca os alunos para ter o nome/efetivo
+            const { data: alunos, error: errAlunos } = await supabase.from('alunos_pelotao').select('id, nome, qra, numero');
+            if(errAlunos) { console.error(errAlunos); return; }
+
+            // 2. Busca as respostas do sociograma
+            const { data: respostas, error: errResp } = await supabase.from('sociograma_respostas').select('*');
+            if(errResp) { console.error(errResp); return; }
+
+            // 3. Atualizar KPIs
+            document.getElementById('kpiEfetivo').innerText = alunos.length;
+            document.getElementById('kpiRespostas').innerText = respostas.length;
+            document.getElementById('kpiPendentes').innerText = alunos.length - respostas.length;
+
+            // 4. Processar os Votos (Matemática da Sociometria)
+            let placar = {};
+            // Inicia zerado para todos
+            alunos.forEach(a => {
+                let qraFmt = (a.qra || a.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                let numFmt = "5" + (a.numero ? a.numero.toString().padStart(2, '0') : '--');
+                placar[a.id] = { nomeExibicao: `${numFmt} - ${qraFmt}`, tatico: 0, tecnico: 0, afinidade: 0, rejeicao: 0 };
+            });
+
+            // Conta as ocorrências (IDs) nas respostas
+            respostas.forEach(r => {
+                if(placar[r.q1_tatico_id]) placar[r.q1_tatico_id].tatico++;
+                if(placar[r.q2_tecnico_id]) placar[r.q2_tecnico_id].tecnico++;
+                if(placar[r.q3_afinidade_id]) placar[r.q3_afinidade_id].afinidade++;
+                if(placar[r.q4_rejeicao_id]) placar[r.q4_rejeicao_id].rejeicao++;
+            });
+
+            // Converter para array para ordenar
+            let arrayPlacar = Object.values(placar);
+
+            // 5. Renderizar Ranking Tático (Top 3)
+            let topTatico = [...arrayPlacar].sort((a,b) => b.tatico - a.tatico).slice(0, 3);
+            renderizarRanking('rankTatico', topTatico, 'tatico', 'text-emerald-600', 'bg-emerald-100', 'votos');
+
+            // 6. Renderizar Ranking Técnico (Top 3)
+            let topTecnico = [...arrayPlacar].sort((a,b) => b.tecnico - a.tecnico).slice(0, 3);
+            renderizarRanking('rankTecnico', topTecnico, 'tecnico', 'text-blue-600', 'bg-blue-100', 'votos');
+
+            // 7. Renderizar Tabela Completa (Alfabética)
+            let tabelaHtml = '';
+            let arrayTabela = [...arrayPlacar].sort((a,b) => a.nomeExibicao.localeCompare(b.nomeExibicao));
+            arrayTabela.forEach(item => {
+                tabelaHtml += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 uppercase font-black text-slate-800">${item.nomeExibicao}</td>
+                        <td class="p-3 text-center text-emerald-600 font-bold">${item.tatico}</td>
+                        <td class="p-3 text-center text-blue-600 font-bold">${item.tecnico}</td>
+                        <td class="p-3 text-center text-pmmt-gold font-bold">${item.afinidade}</td>
+                        <td class="p-3 text-center text-rose-600 font-bold ${item.rejeicao > 0 ? 'bg-rose-50' : ''}">${item.rejeicao}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById('tabelaConsolidada').innerHTML = tabelaHtml;
+
+            // 8. Gerar Gráfico de Rejeição (Chart.js)
+            // Pegar apenas quem recebeu mais de 0 votos de rejeição, ordenado
+            let topRejeicao = [...arrayPlacar].filter(a => a.rejeicao > 0).sort((a,b) => b.rejeicao - a.rejeicao);
+            
+            if(chartRejeicaoInstance) { chartRejeicaoInstance.destroy(); } // Limpar gráfico antigo
+
+            const ctx = document.getElementById('graficoRejeicao').getContext('2d');
+            chartRejeicaoInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topRejeicao.map(a => a.nomeExibicao.split('-')[1].trim()), // Pega só o QRA
+                    datasets: [{
+                        label: 'Votos de Rejeição / Insegurança',
+                        data: topRejeicao.map(a => a.rejeicao),
+                        backgroundColor: 'rgba(225, 29, 72, 0.7)', // rose-600 com opacidade
+                        borderColor: 'rgb(225, 29, 72)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function renderizarRanking(elementoId, dados, chaveValor, corTexto, corFundo, sulfixo) {
+            const ul = document.getElementById(elementoId);
+            ul.innerHTML = '';
+            
+            if (dados[0][chaveValor] === 0) {
+                ul.innerHTML = '<li class="text-center text-slate-400 text-sm font-bold py-4">Aguardando mais respostas...</li>';
+                return;
+            }
+
+            const icones = ['<i class="fa-solid fa-trophy text-yellow-500"></i>', '<i class="fa-solid fa-medal text-slate-400"></i>', '<i class="fa-solid fa-award text-amber-700"></i>'];
+
+            dados.forEach((item, index) => {
+                if (item[chaveValor] > 0) {
+                    ul.innerHTML += `
+                        <li class="bg-white border border-slate-200 p-3 rounded-lg flex justify-between items-center shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <span class="text-lg">${icones[index] || `<span class="text-slate-400 font-bold">${index+1}º</span>`}</span>
+                                <span class="font-black text-slate-700 uppercase">${item.nomeExibicao}</span>
+                            </div>
+                            <span class="${corFundo} ${corTexto} px-3 py-1 rounded-full text-xs font-black tracking-widest">${item[chaveValor]} ${sulfixo}</span>
+                        </li>
+                    `;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

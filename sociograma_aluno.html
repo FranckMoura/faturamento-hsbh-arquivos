@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sociograma - 5º Pelotão PMMT</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pmmt-blue': '#0a2240',
+                        'pmmt-gold': '#d4af37',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <header class="bg-pmmt-blue text-white shadow-lg border-b-4 border-pmmt-gold">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <i class="fa-solid fa-network-wired text-pmmt-gold text-3xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold text-pmmt-gold tracking-wider">5º PELOTÃO - PMMT</h1>
+                    <p class="text-xs text-slate-300 font-semibold tracking-widest uppercase">Questionário Sociométrico</p>
+                </div>
+            </div>
+            <div class="text-right hidden md:block">
+                <span id="statusConexao" class="text-sm font-bold text-slate-400"><i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 py-8 w-full">
+        
+        <!-- Instruções -->
+        <div class="bg-white rounded-xl shadow-md border-l-4 border-pmmt-gold p-6 mb-6">
+            <h2 class="text-lg font-black text-pmmt-blue uppercase tracking-wider mb-2">Instruções de Preenchimento</h2>
+            <p class="text-sm text-slate-600 mb-3">
+                Este questionário é uma ferramenta de mapeamento relacional. <b>Suas respostas são estritamente sigilosas</b> e serão acessadas apenas pelo Comando do Pelotão para fins de estruturação de equipes e instruções.
+            </p>
+            <ul class="text-sm text-slate-600 list-disc pl-5 space-y-1">
+                <li>Responda por instinto. Não gaste muito tempo pensando.</li>
+                <li>Você não pode selecionar a si mesmo nas respostas.</li>
+                <li>Seja honesto(a). O objetivo é a segurança e evolução tática da tropa.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md border border-slate-200 p-6 mb-8">
+            <form id="formSociograma" onsubmit="enviarRespostas(event)" class="space-y-8">
+                
+                <!-- Identificação -->
+                <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                    <label class="block text-sm font-black text-pmmt-blue uppercase mb-2"><i class="fa-solid fa-user-check text-pmmt-gold mr-2"></i> 1. Quem é você?</label>
+                    <select id="alunoAvaliador" onchange="atualizarOpcoes()" class="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-pmmt-blue outline-none font-bold text-slate-700" required>
+                        <option value="">Carregando efetivo...</option>
+                    </select>
+                </div>
+
+                <div class="border-t-2 border-dashed border-slate-200 my-4"></div>
+
+                <!-- Cenário 1 -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> 
+                        Cenário 1: Em um patrulhamento noturno de alto risco, qual colega do pelotão você escolheria para cobrir suas costas na viatura? <span class="text-xs text-slate-400 font-normal">(Liderança Tática/Confiança)</span>
+                    </label>
+                    <select id="q1_tatico" class="aluno-opcao w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-pmmt-blue outline-none" required disabled>
+                        <option value="">Primeiro, selecione quem é você acima...</option>
+                    </select>
+                </div>
+
+                <!-- Cenário 2 -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">
+                        <i class="fa-solid fa-book text-blue-600 mr-1"></i> 
+                        Cenário 2: Você precisa preencher um TCO complexo na rua, com múltiplas versões, sob pressão. A qual colega você ligaria para pedir orientação técnica? <span class="text-xs text-slate-400 font-normal">(Referência Técnica/Intelectual)</span>
+                    </label>
+                    <select id="q2_tecnico" class="aluno-opcao w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-pmmt-blue outline-none" required disabled>
+                        <option value="">Primeiro, selecione quem é você acima...</option>
+                    </select>
+                </div>
+
+                <!-- Cenário 3 -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">
+                        <i class="fa-solid fa-handshake text-pmmt-gold mr-1"></i> 
+                        Cenário 3: Se fosse escalado para um serviço contínuo de 24h em um posto fixo e isolado, com qual colega você gostaria de tirar esse serviço? <span class="text-xs text-slate-400 font-normal">(Afinidade/Coesão)</span>
+                    </label>
+                    <select id="q3_afinidade" class="aluno-opcao w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-pmmt-blue outline-none" required disabled>
+                        <option value="">Primeiro, selecione quem é você acima...</option>
+                    </select>
+                </div>
+
+                <!-- Cenário 4 -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> 
+                        Cenário 4: Se você comandasse uma guarnição e tivesse que excluir 1 pessoa por insegurança tática ou descontrole emocional, quem você evitaria levar? <span class="text-xs text-slate-400 font-normal">(Risco/Rejeição)</span>
+                    </label>
+                    <select id="q4_rejeicao" class="aluno-opcao w-full border border-rose-300 bg-rose-50 rounded-lg p-3 focus:ring-2 focus:ring-rose-500 outline-none" required disabled>
+                        <option value="">Primeiro, selecione quem é você acima...</option>
+                    </select>
+                </div>
+                
+                <div class="pt-4 border-t border-slate-200">
+                    <button type="submit" id="btnSalvar" class="w-full bg-pmmt-blue hover:bg-blue-900 text-pmmt-gold font-black p-4 rounded-xl transition shadow-lg flex justify-center items-center gap-2 uppercase tracking-widest text-sm">
+                        <i class="fa-solid fa-paper-plane"></i> Enviar Respostas Sigilosas
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // CREDENCIAIS SUPABASE (CORRIGIDO)
+        // ==========================================
+        const SUPABASE_URL = 'https://pcazslnvhzbhjonqpdwl.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjYXpzbG52aHpiaGpvbnFwZHdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NzU1NzEsImV4cCI6MjA5ODE1MTU3MX0.zuqEUsOZ4Xqk0MetiV35E3yVt1oEBms3v4kO3T8O1XA';
+        
+        // CORREÇÃO: Utilizando window.supabase.createClient para evitar erro de inicialização
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let listaAlunosGlobal = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-check-circle"></i> Conectado';
+                document.getElementById('statusConexao').className = 'text-sm font-bold text-emerald-400';
+                await carregarAlunos();
+            } catch (error) {
+                document.getElementById('statusConexao').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de Conexão';
+                document.getElementById('statusConexao').className = 'text-sm font-bold text-red-400';
+                console.error(error);
+            }
+        });
+
+        async function carregarAlunos() {
+            // CORREÇÃO: Agora utilizando a variável supabaseClient correta
+            const { data, error } = await supabaseClient
+                .from('alunos_pelotao')
+                .select('id, nome, numero, qra')
+                .order('numero', { ascending: true });
+            
+            if (error) {
+                console.error("Erro ao carregar do banco:", error);
+                return;
+            }
+            
+            listaAlunosGlobal = data;
+            const selectAvaliador = document.getElementById('alunoAvaliador');
+            
+            selectAvaliador.innerHTML = '<option value="">-- Selecione o seu nome --</option>';
+            
+            listaAlunosGlobal.forEach(aluno => {
+                const numeroFormatado = "5" + (aluno.numero ? aluno.numero.toString().padStart(2, '0') : '--');
+                const qraFormatado = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                const textOption = `${numeroFormatado} - ${qraFormatado}`;
+                
+                selectAvaliador.innerHTML += `<option value="${aluno.id}">${textOption}</option>`;
+            });
+        }
+
+        function atualizarOpcoes() {
+            const idAvaliador = document.getElementById('alunoAvaliador').value;
+            const selectsResposta = document.querySelectorAll('.aluno-opcao');
+
+            if (!idAvaliador) {
+                selectsResposta.forEach(select => {
+                    select.disabled = true;
+                    select.innerHTML = '<option value="">Primeiro, selecione quem é você acima...</option>';
+                });
+                return;
+            }
+
+            // Habilita as caixas de resposta e preenche retirando o nome do próprio aluno
+            selectsResposta.forEach(select => {
+                select.disabled = false;
+                select.innerHTML = '<option value="">-- Escolha um colega --</option>';
+                
+                listaAlunosGlobal.forEach(aluno => {
+                    // O aluno não pode votar nele mesmo
+                    if (aluno.id.toString() !== idAvaliador) {
+                        const numeroFormatado = "5" + (aluno.numero ? aluno.numero.toString().padStart(2, '0') : '--');
+                        const qraFormatado = (aluno.qra || aluno.nome).replace(/AL SD PM |AL SD /gi, '').trim().toUpperCase();
+                        select.innerHTML += `<option value="${aluno.id}">${numeroFormatado} - ${qraFormatado}</option>`;
+                    }
+                });
+            });
+        }
+
+        async function enviarRespostas(e) {
+            e.preventDefault();
+
+            const avaliador_id = document.getElementById('alunoAvaliador').value;
+            const q1 = document.getElementById('q1_tatico').value;
+            const q2 = document.getElementById('q2_tecnico').value;
+            const q3 = document.getElementById('q3_afinidade').value;
+            const q4 = document.getElementById('q4_rejeicao').value;
+
+            if (!avaliador_id || !q1 || !q2 || !q3 || !q4) {
+                Swal.fire('Atenção', 'Por favor, responda a todos os cenários.', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btnSalvar');
+            const btnHtmlOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando...';
+            btn.disabled = true;
+
+            const payload = {
+                avaliador_id: parseInt(avaliador_id),
+                q1_tatico_id: parseInt(q1),
+                q2_tecnico_id: parseInt(q2),
+                q3_afinidade_id: parseInt(q3),
+                q4_rejeicao_id: parseInt(q4)
+            };
+
+            // CORREÇÃO: Utilizando supabaseClient para enviar dados
+            const { error } = await supabaseClient.from('sociograma_respostas').insert([payload]);
+
+            if (error) {
+                console.error("Erro no insert:", error);
+                // Se a constraint UNIQUE barrar, significa que ele já respondeu
+                if(error.code === '23505') {
+                    Swal.fire('Já Registrado', 'Você já preencheu o sociograma. Apenas uma resposta por aluno é permitida.', 'info');
+                } else {
+                    Swal.fire('Erro!', 'Não foi possível salvar as respostas.', 'error');
+                }
+                btn.innerHTML = btnHtmlOriginal;
+                btn.disabled = false;
+            } else {
+                Swal.fire({
+                    title: 'Enviado com Sucesso!',
+                    text: 'Suas respostas foram registradas com segurança e sigilo.',
+                    icon: 'success',
+                    confirmButtonColor: '#0a2240'
+                }).then(() => {
+                    // Limpa o formulário e bloqueia tela para não enviar duplicado
+                    document.getElementById('formSociograma').reset();
+                    document.getElementById('formSociograma').style.display = 'none';
+                    document.querySelector('.bg-white.rounded-xl').innerHTML = '<div class="text-center p-10"><i class="fa-solid fa-check-double text-5xl text-emerald-500 mb-4"></i><h2 class="text-xl font-bold text-pmmt-blue">Questionário Concluído</h2><p class="text-slate-500">Obrigado pela sua colaboração.</p></div>';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
